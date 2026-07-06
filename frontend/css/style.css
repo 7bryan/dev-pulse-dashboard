@@ -1,0 +1,63 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --ink: #0a0e1a;
+  --panel: #11162a;
+  --panel-line: rgba(232, 196, 104, 0.16);
+  --gold: #e8c468;
+  --copper: #d97757;
+  --text-main: #ece9e2;
+  --text-muted: #8189a3;
+  --error: #e2725b;
+
+  --font-display: "Fraunces", serif;
+  --font-body: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+body {
+  background: radial-gradient(ellipse at top, #131a30 0%, var(--ink) 60%);
+  color: var(--text-main);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.status-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #161b22;
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid #30363d;
+  font-size: 0.85 rem;
+  color: #c9d1d9;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #8b949e;
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+/* state changes triggered by javascript */
+.status-badge.online .status-dot {
+  background-color: #2ea44f;
+  box-shadow: 0 0 8px #2ea44f;
+}
+
+.status-badge.offline .status-dot {
+  background-color: #f85149;
+  box-shadow: 0 0 8px #f85149;
+}
