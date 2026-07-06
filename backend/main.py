@@ -1,7 +1,17 @@
 from fastapi import FastAPI, HTTPException, status
+from fastapi.middleware.cors import CORSMiddleware
 from services import fetch_github_data
 
 app = FastAPI(title="Github User Proxy Services")
+
+# condigure CORS so the frontend can talk to the backend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["http://localhost:3000"],
+    allow_headers=["http://localhost:3000"],
+)
 
 
 # defining the endpoint of the application instance
@@ -30,11 +40,17 @@ async def get_github_user(username: str):
                 detail="Rate limit exceeded. Please try again later",
             )
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_DOWN,
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="An unexpected error occured",
         )
 
 
 # a separate base point to test if the server is working
+@app.get("/")
 def read_root():
     return {"status": "success", "message": "FastAPI application is running"}
+
+
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
