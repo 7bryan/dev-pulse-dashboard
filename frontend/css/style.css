@@ -37,7 +37,7 @@ body {
   padding: 6px 12px;
   border-radius: 20px;
   border: 1px solid #30363d;
-  font-size: 0.85 rem;
+  font-size: 0.85rem;
   color: #c9d1d9;
 }
 
@@ -60,4 +60,46 @@ body {
 .status-badge.offline .status-dot {
   background-color: #f85149;
   box-shadow: 0 0 8px #f85149;
+}
+
+.site-header {
+  background-color: var(--panel);
+  border-bottom: 1px solid var(--panel-line);
+  width: 100%;
+}
+
+.navbar {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between; /*pushing the brand to left and badges to the right*/
+  align-items: center; /*Center items vertically*/
+}
+
+/* brand styling */
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-icon {
+  color: var(--gold);
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+}
+
+.brand-text h1 {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-main);
+  line-height: 1.2;
+}
+
+.brand-text .tagline {
+  font-size: 0.75rem;
+  color: var(--text-muted);
 }
