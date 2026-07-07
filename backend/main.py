@@ -1,6 +1,12 @@
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
-from services import fetch_github_data, fetch_repo_data
+from services import (
+    fetch_github_data,
+    fetch_user_repo_commits,
+    fetch_user_repo_data,
+    fetch_user_repo_issues,
+    fetch_user_repos,
+)
 
 app = FastAPI(title="Github User Proxy Services")
 
@@ -48,7 +54,7 @@ async def get_github_user(username: str):
 @app.get("/github/{username}/repos")
 async def get_user_github_repos(username: str):
     try:
-        data = await fetch_repo_data(username)
+        data = await fetch_user_repos(username)
 
         if data is None:
             raise HTTPException(
@@ -64,7 +70,81 @@ async def get_user_github_repos(username: str):
             )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="An unexpected rror occured",
+            detail="An unexpected error occured",
+        )
+
+
+@app.get("/github/{username}/repos/{repo}")
+async def get_user_github_repo_data(username: str, repo: str):
+    try:
+        data = await fetch_user_repo_data(username, repo)
+
+        if data is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail=f"something wrong {data}"
+            )
+
+        return data
+    except Exception as e:
+        if "Too many requests" in str(e):
+            raise HTTPException(
+                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                detail="Rate limit exceeded. Please try again later",
+            )
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="An unexpected error occured",
+        )
+
+
+@app.get("/github/{username}/repos/{repo}/issues")
+async def get_user_github_repo_issues(username: str, repo: str):
+    try:
+        # repo_data = await fetch_user_repo_data(username, repo)
+
+        # if not repo_data["has_issues"]:
+        #     return {"status": "This repo don't have issues"}
+
+        data = await fetch_user_repo_issues(username, repo)
+
+        if data is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail=f"something wrong {data}"
+            )
+
+        return data
+    except Exception as e:
+        if "Too many requests" in str(e):
+            raise HTTPException(
+                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                detail="Rate limit exceeded. Please try again later",
+            )
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="An unexpected error occured",
+        )
+
+
+@app.get("/github/{username}/repos/{repo}/commits")
+async def get_user_github_repo_commits(username: str, repo: str):
+    try:
+        data = await fetch_user_repo_commits(username, repo)
+
+        if data is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail=f"something wrong {data}"
+            )
+
+        return data
+    except Exception as e:
+        if "Too many requests" in str(e):
+            raise HTTPException(
+                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                detail="Rate limit exceeded. Please try again later",
+            )
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="An unexpected error occured",
         )
 
 
