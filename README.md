@@ -8,7 +8,9 @@ github-api/
 │   └── requirements.txt        # List of Python dependencies (fastapi, requests, etc.)
 │
 └── frontend/
-    ├── index.html              # The structural webpage layout (Input field, button, dashboard area)
-    ├── style.css               # The styling and skinning (Sleek layout, cards, fonts, and grid system)
-    └── app.js                  # The frontend brain (Captures inputs, sends fetches, updates index.html)
+    ├── css/
+    │   └── style.css
+    ├── js/                     # The structural webpage layout (Input field, button, dashboard area
+    │   └── app.js              # The frontend brain (Captures inputs, sends fetches, updates index.html)
+    └── index.html
 ```
