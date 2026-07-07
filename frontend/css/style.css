@@ -29,39 +29,6 @@ body {
   position: relative;
 }
 
-.status-badge {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background-color: #161b22;
-  padding: 6px 12px;
-  border-radius: 20px;
-  border: 1px solid #30363d;
-  font-size: 0.85rem;
-  color: #c9d1d9;
-}
-
-.status-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: #8b949e;
-  transition:
-    background-color 0.3s ease,
-    box-shadow 0.3s ease;
-}
-
-/* state changes triggered by javascript */
-.status-badge.online .status-dot {
-  background-color: #2ea44f;
-  box-shadow: 0 0 8px #2ea44f;
-}
-
-.status-badge.offline .status-dot {
-  background-color: #f85149;
-  box-shadow: 0 0 8px #f85149;
-}
-
 .site-header {
   background-color: var(--panel);
   border-bottom: 1px solid var(--panel-line);
@@ -102,4 +69,82 @@ body {
 .brand-text .tagline {
   font-size: 0.75rem;
   color: var(--text-muted);
+}
+
+.status-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #161b22;
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid #30363d;
+  font-size: 0.85rem;
+  color: #c9d1d9;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #8b949e;
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+/* state changes triggered by javascript */
+.status-badge.online .status-dot {
+  background-color: #2ea44f;
+  box-shadow: 0 0 8px #2ea44f;
+}
+
+.status-badge.offline .status-dot {
+  background-color: #f85149;
+  box-shadow: 0 0 8px #f85149;
+}
+
+.nav-links {
+  display: flex;
+  gap: 24px;
+  list-style: none;
+}
+
+.nav-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: color 0.2s ease;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  color: var(--text-main);
+}
+
+.nav-links a.active {
+  color: var(--gold); /*highlighting the active dashboard page*/
+}
+
+/* right side actions layout guide */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px; /* space between th Github icon and the status badge */
+}
+
+.github-shortcut {
+  color: var(--text-muted);
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s ease;
+}
+
+.github-shortcut:hover {
+  color: var(--text-main);
 }
