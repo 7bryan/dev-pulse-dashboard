@@ -29,3 +29,26 @@ async def fetch_github_data(username: str) -> Optional[Dict[str, Any]]:
         # catching connection errors, timeout, etc. safely
         print(f"Network error occur {e}")
         return None
+
+
+async def fetch_repo_data(username: str) -> Optional[Dict[str, Any]]:
+    # getting all repo of <username>
+    url = f"https://api.github.com/users/{username}/repos"
+
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url, headers=HEADERS)
+
+            if response.status_code == 200:
+                return response.json()
+            elif response.status_code == 429:
+                raise httpx.HTTPStatusError(
+                    "Too many requests to github API",
+                    request=response.request,
+                    response=response,
+                )
+            else:
+                return None
+    except httpx.RequestError as e:
+        print(f"network error occur {e}")
+        return None

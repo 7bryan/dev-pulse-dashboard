@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
-from services import fetch_github_data
+from services import fetch_github_data, fetch_repo_data
 
 app = FastAPI(title="Github User Proxy Services")
 
@@ -42,6 +42,29 @@ async def get_github_user(username: str):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="An unexpected error occured",
+        )
+
+
+@app.get("/github/{username}/repos")
+async def get_user_github_repos(username: str):
+    try:
+        data = await fetch_repo_data(username)
+
+        if data is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail=f"something wrong {data}"
+            )
+
+        return data
+    except Exception as e:
+        if "Too many requests" in str(e):
+            raise HTTPException(
+                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                detail="Rate limit exceeded. Please try again later",
+            )
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="An unexpected rror occured",
         )
 
 
