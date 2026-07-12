@@ -2,6 +2,7 @@ import httpx
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from services import (
+    GithubRateLimitError,
     fetch_github_data,
     fetch_user_repo_commits,
     fetch_user_repo_data,
@@ -11,14 +12,25 @@ from services import (
 
 app = FastAPI(title="Github User Proxy Services")
 
+# defining allowed origins
+origins = [
+    "http://localhost:3000",
+]
+
 # condigure CORS so the frontend can talk to the backend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=origins,  # allowed domains
     allow_credentials=True,
-    allow_methods=["http://localhost:3000"],
-    allow_headers=["http://localhost:3000"],
+    allow_methods=["*"],  # allow all standard http method (GET, POST, etc)
+    allow_headers=["*"],  # allow all custom or standard request headers
 )
+
+
+# helper error handling function
+# async def error_handling():
+# not builded yet
+# ...
 
 
 # refactor (fixing future bug)
@@ -36,11 +48,16 @@ async def get_github_user(username: str):
         raise
 
     # catch rate limit or deeper errors raised by the service layer
-    except httpx.HTTPStatusError:
+    except GithubRateLimitError:
         raise HTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
             detail="Rate limit exceeded. Please try again later",
         )
+    # except httpx.HTTPStatusError:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+    #         detail="Rate limit exceeded. Please try again later",
+    #     )
 
     except Exception:
         raise HTTPException(
@@ -67,7 +84,8 @@ async def get_user_github_repos(username: str):
     except HTTPException:
         raise
 
-    except httpx.HTTPStatusError:
+    # catch rate limit or deeper errors raised by the service layer
+    except GithubRateLimitError:
         raise HTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
             detail="Rate limit exceeded. Please try again later",
@@ -96,7 +114,8 @@ async def get_user_github_repo_data(username: str, repo: str):
     except HTTPException:
         raise
 
-    except httpx.HTTPStatusError:
+    # catch rate limit or deeper errors raised by the service layer
+    except GithubRateLimitError:
         raise HTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
             detail="Rate limit exceeded. Please try again later",
@@ -130,7 +149,8 @@ async def get_user_github_repo_issues(username: str, repo: str):
     except HTTPException:
         raise
 
-    except httpx.HTTPStatusError:
+    # catch rate limit or deeper errors raised by the service layer
+    except GithubRateLimitError:
         raise HTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
             detail="Rate limit exceeded. Please try again later",
@@ -159,10 +179,11 @@ async def get_user_github_repo_commits(username: str, repo: str):
     except HTTPException:
         raise
 
-    except httpx.HTTPStatusError:
+    # catch rate limit or deeper errors raised by the service layer
+    except GithubRateLimitError:
         raise HTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-            detail="Rate limit Exceeded. Please try again later",
+            detail="Rate limit exceeded. Please try again later",
         )
 
     except Exception:
