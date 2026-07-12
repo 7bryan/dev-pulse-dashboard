@@ -2,6 +2,34 @@ from typing import Any, Dict, Optional
 
 import httpx
 
+
+# custom exception for better code readbility and stucture
+class GithubError(Exception):
+    # base exception for all Github API Errors
+    pass
+
+
+# using inheritance for cleaner code
+class GithubRateLimitError(GithubError):
+    # raised when too many request (429)
+    pass
+
+
+class GithubAuthError(GithubError):
+    # raised when unauthorized (401)
+    pass
+
+
+class GithubServerError(GithubError):
+    # raised when the internal server is error (500)
+    pass
+
+
+class GithubConnectionError(GithubError):
+    # catching connection error
+    pass
+
+
 HEADERS = {"User-Agent": "Awecome-Octocat-App"}
 
 
@@ -11,22 +39,41 @@ async def request_github(url):
         async with httpx.AsyncClient() as client:
             response = await client.get(url, headers=HEADERS)
 
-            if response.status_code == 200:
-                # return the parsed json as Dictionary
-                return response.json()
-            elif response.status_code == 429:
-                # instead of using print, raise an exception or handle it via a status indicator
-                raise httpx.HTTPStatusError(
-                    "Too many requests to Github API",
-                    request=response.request,
-                    response=response,
-                )
-            else:
-                return None
+            if response.status_code != 200:
+                # raise HTTPStatusError if one occurred
+                response.raise_for_status()
+
+            return response.json()
+
+    # instead of using print, raise an exception or handle it via a status indicator
+    # raise httpx.HTTPStatusError(
+    #     "Too many requests to Github API",
+    #     request=response.request,
+    #     response=response,
+    # )
+    except httpx.HTTPStatusError as e:
+        status = e.response.status_code
+
+        if status == 429:
+            raise GithubRateLimitError("Too many requests to Github API") from e
+        elif status in (401, 403):
+            raise GithubAuthError(
+                f"Aunthentication failed ({status}): Not Allowed"
+            ) from e
+        elif status == 404:
+            return None
+        # handling multiple server side erro
+        elif 500 <= status < 600:
+            raise GithubServerError("Github had an internal problem")
+        # handling unknown error or handling unexpected github error
+        else:
+            print("Unknown Github Error")
+            return None
+
     except httpx.RequestError as e:
         # catching connection errors, timeout, etc. safely
-        print(f"Network error occur {e}")
-        return None
+        raise GithubConnectionError("Network error occurr") from e
+        # return None
 
 
 async def fetch_github_data(username: str) -> Optional[Dict[str, Any]]:
