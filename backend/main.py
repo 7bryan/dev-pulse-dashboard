@@ -8,7 +8,9 @@ from services import (
     GithubRateLimitError,
     GithubServerError,
     fetch_github_data,
+    fetch_user_repo_branches,
     fetch_user_repo_commits,
+    fetch_user_repo_contributors,
     fetch_user_repo_data,
     fetch_user_repo_issues,
     fetch_user_repos,
@@ -148,7 +150,34 @@ async def get_user_github_repo_commits(username: str, repo: str):
 
     if data is None:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail=f"something wrong {data}"
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"something wrong {data}",
+        )
+
+    return data
+
+
+@app.get("/github/{username}/repos/{repo}/contributors")
+async def get_user_github_repo_contributors(username: str, repo: str):
+    data = await fetch_user_repo_contributors(username, repo)
+
+    if data is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"something wrong {data}",
+        )
+
+    return data
+
+
+@app.get("/github/{username}/repos/{repo}/branches")
+async def get_user_github_repo_branches(username: str, repo: str):
+    data = await fetch_user_repo_branches(username, repo)
+
+    if data is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"something wrong {data}",
         )
 
     return data

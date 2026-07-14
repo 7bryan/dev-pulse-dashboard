@@ -108,3 +108,21 @@ async def fetch_user_repo_commits(username: str, repo: str) -> Optional[Dict[str
     url = f"https://api.github.com/repos/{username}/{repo}/commits"
 
     return await request_github(url)
+
+
+# service for getting contributors of a repo
+async def fetch_user_repo_contributors(
+    username: str, repo: str
+) -> Optional[Dict[str, Any]]:
+    url = f"https://api.github.com/repos/{username}/{repo}/contributors"
+
+    return await request_github(url)
+
+
+# getting a repo branches
+async def fetch_user_repo_branches(
+    username: str, repo: str
+) -> Optional[Dict[str, Any]]:
+    url = f"https://api.github.com/repos/{username}/{repo}/branches"
+
+    return await request_github(url)
