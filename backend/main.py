@@ -2,7 +2,10 @@ import httpx
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from services import (
+    GithubAuthError,
+    GithubConnectionError,
     GithubRateLimitError,
+    GithubServerError,
     fetch_github_data,
     fetch_user_repo_commits,
     fetch_user_repo_data,
@@ -59,9 +62,11 @@ async def get_github_user(username: str):
     #         detail="Rate limit exceeded. Please try again later",
     #     )
 
-    except Exception:
+    # except Exception:
+    # catching internal server error
+    except GithubServerError:
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,  # or 503 services unavaiable
             detail="An unexpected error occurred",
         )
 
@@ -91,9 +96,10 @@ async def get_user_github_repos(username: str):
             detail="Rate limit exceeded. Please try again later",
         )
 
-    except Exception:
+    # catching internal server error
+    except GithubServerError:
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,  # or 503 services unavaiable
             detail="An unexpected error occurred",
         )
 
@@ -121,9 +127,10 @@ async def get_user_github_repo_data(username: str, repo: str):
             detail="Rate limit exceeded. Please try again later",
         )
 
-    except Exception:
+    # catching internal server error
+    except GithubServerError:
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,  # or 503 services unavaiable
             detail="An unexpected error occurred",
         )
 
@@ -156,9 +163,10 @@ async def get_user_github_repo_issues(username: str, repo: str):
             detail="Rate limit exceeded. Please try again later",
         )
 
-    except Exception:
+    # catching internal server error
+    except GithubServerError:
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,  # or 503 services unavaiable
             detail="An unexpected error occurred",
         )
 
@@ -186,9 +194,10 @@ async def get_user_github_repo_commits(username: str, repo: str):
             detail="Rate limit exceeded. Please try again later",
         )
 
-    except Exception:
+    # catching internal server error
+    except GithubServerError:
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,  # or 503 services unavaiable
             detail="An unexpected error occurred",
         )
 
