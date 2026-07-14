@@ -3,7 +3,7 @@ from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from services import (
     GithubAuthError,
-    GithubConnectionError,
+    GithubConnectionError,  # put this in exception later
     GithubRateLimitError,
     GithubServerError,
     fetch_github_data,
@@ -70,6 +70,12 @@ async def get_github_user(username: str):
             detail="An unexpected error occurred",
         )
 
+    except GithubAuthError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication failed",
+        )
+
     # if Github returned a 404 or something went wrong , data will be None
     if data is None:
         raise HTTPException(
@@ -103,6 +109,12 @@ async def get_user_github_repos(username: str):
             detail="An unexpected error occurred",
         )
 
+    except GithubAuthError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication failed",
+        )
+
     if data is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -132,6 +144,12 @@ async def get_user_github_repo_data(username: str, repo: str):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,  # or 503 services unavaiable
             detail="An unexpected error occurred",
+        )
+
+    except GithubAuthError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication failed",
         )
 
     if data is None:
@@ -170,6 +188,12 @@ async def get_user_github_repo_issues(username: str, repo: str):
             detail="An unexpected error occurred",
         )
 
+    except GithubAuthError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication failed",
+        )
+
     if data is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -199,6 +223,12 @@ async def get_user_github_repo_commits(username: str, repo: str):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,  # or 503 services unavaiable
             detail="An unexpected error occurred",
+        )
+
+    except GithubAuthError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication failed",
         )
 
     if data is None:
