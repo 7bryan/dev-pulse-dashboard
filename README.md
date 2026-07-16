@@ -11,6 +11,7 @@ github-api/
     ├── css/
     │   └── style.css
     ├── js/                     # The structural webpage layout (Input field, button, dashboard area
+    │   ├── api.js
     │   └── app.js              # The frontend brain (Captures inputs, sends fetches, updates index.html)
     └── index.html
 ```
