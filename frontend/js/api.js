@@ -38,6 +38,8 @@ async function checkBackendHealth() {
   }
 }
 
+// fetching each feature
+
 function getUser(username) {
   return apiRequest(`/github/${encodeURIComponent(username)}`);
 }
